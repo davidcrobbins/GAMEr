@@ -6,6 +6,17 @@
     android:layout_height="match_parent">
 
     <Button
+        android:id="@+id/manageGames"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Manage Games"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/yourGames"
+        app:layout_constraintStart_toStartOf="@+id/yourGames"
+        app:layout_constraintTop_toBottomOf="@+id/yourGames"
+        app:layout_constraintVertical_bias="0.050000012" />
+
+    <Button
         android:id="@+id/yourGames"
         android:layout_width="332dp"
         android:layout_height="56dp"

@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':firebaseUI.gradle', ':mylibrary', ':firebase.gradle'
 rootProject.name='GAMEr'
