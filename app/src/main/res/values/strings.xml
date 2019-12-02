@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">GAMEr</string>
+    <string name="open_drawer">Open Drawer</string>
+    <string name="close_drawer">Close Drawer</string>
+    <string name="manage_games">Manage Games</string>
+    <string name="your_games">Your Games</string>
+    <string name="create_games">Create Games</string>
+    <string name="find_games">Find Games</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.example.gamer;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,8 +12,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    protected void onCreate() {
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        Log.w("fuck12", "onCreate: for MainActivity ");
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Initiallized buttons.
         Button findGames = findViewById(R.id.findGames);
@@ -21,10 +25,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Launch Find GameActivity when button pressed
         findGames.setOnClickListener(unused -> {
-            Intent intent = new Intent(this, FindGamesActivity.class);
+            Intent intent = new Intent(MainActivity.this, LaunchActivity.class);
 
             //Send User Email to find Games
-            intent.putExtra("userEmail", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            //intent.putExtra("userEmail", FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
             startActivity(intent);
         });
