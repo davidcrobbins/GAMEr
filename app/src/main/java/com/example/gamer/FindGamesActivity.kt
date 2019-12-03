@@ -1,5 +1,6 @@
 package com.example.gamer
 
+//import com.google.android.material.navigation.NavigationView
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -7,14 +8,11 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
-//import com.google.android.material.navigation.NavigationView
 import com.yuyakaido.android.cardstackview.*
 import java.util.*
 
@@ -28,7 +26,8 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_findgames)
-        setupNavigation()
+        print("A")
+        //setupNavigation()
         setupCardStackView()
         setupButton()
     }
@@ -68,35 +67,6 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
     override fun onCardDisappeared(view: View, position: Int) {
         val textView = view.findViewById<TextView>(R.id.item_name)
         Log.d("CardStackView", "onCardDisappeared: ($position) ${textView.text}")
-    }
-
-    private fun setupNavigation() {
-        // Toolbar
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        // DrawerLayout
-        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
-        actionBarDrawerToggle.syncState()
-        drawerLayout.addDrawerListener(actionBarDrawerToggle)
-
-        /*
-        // NavigationView
-        val navigationView = findViewById<NavigationView>(R.id.navigation_view)
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.reload -> reload()
-                R.id.add_spot_to_first -> addFirst(1)
-                R.id.add_spot_to_last -> addLast(1)
-                R.id.remove_spot_from_first -> removeFirst(1)
-                R.id.remove_spot_from_last -> removeLast(1)
-                R.id.replace_first_spot -> replace()
-                R.id.swap_first_for_last -> swap()
-            }
-            drawerLayout.closeDrawers()
-            true
-        }
-        */
     }
 
     private fun setupCardStackView() {

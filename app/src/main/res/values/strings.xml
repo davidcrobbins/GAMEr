@@ -6,4 +6,7 @@
     <string name="your_games">Your Games</string>
     <string name="create_games">Create Games</string>
     <string name="find_games">Find Games</string>
+    <string name="insert_bio">Description of the Game/event</string>
+    <string name="insert_name">Game Name</string>
+    <string name="create_game">Create Game</string>
 </resources>
