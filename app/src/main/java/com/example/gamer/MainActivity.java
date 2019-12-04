@@ -7,8 +7,6 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,20 +33,20 @@ public class MainActivity extends AppCompatActivity {
 
         //Launch the ManageGames Activity
         manageGames.setOnClickListener(unused -> {
-            Intent intent = new Intent(this, ManageGamesActivity.class);
+            Intent intent = new Intent(this, FindGamesActivity.class);
 
             //Send User Email to find Games
-            intent.putExtra("userEmail", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            //intent.putExtra("userEmail", FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
             startActivity(intent);
         });
 
         //Launch the Your Games Activity
         yourGames.setOnClickListener(unused -> {
-            Intent intent = new Intent(this, YourGamesActivity.class);
+            Intent intent = new Intent(this, FindGamesActivity.class);
 
             //Send User Email to find Games
-            intent.putExtra("userEmail", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            //intent.putExtra("userEmail", FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
             startActivity(intent);
         });
