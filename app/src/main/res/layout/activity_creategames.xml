@@ -20,6 +20,12 @@
         android:inputType="textPersonName"
         android:text="@string/insert_name" />
 
+    <Button
+        android:id="@+id/search"
+        android:layout_width="143dp"
+        android:layout_height="wrap_content"
+        android:text="Search" />
+
     <EditText
         android:id="@+id/bio"
         android:layout_width="match_parent"

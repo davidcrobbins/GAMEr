@@ -5,7 +5,8 @@ data class Spot(
         val name: String,
         val city: String,
         val url: String,
-        val idNumber: Long
+        val latitude: Double,
+        val longitude: Double
 ) {
     companion object {
         private var counter = 0L

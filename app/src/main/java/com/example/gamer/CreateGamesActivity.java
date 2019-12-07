@@ -4,15 +4,16 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,6 +32,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class CreateGamesActivity extends AppCompatActivity {
 
@@ -45,20 +49,42 @@ public class CreateGamesActivity extends AppCompatActivity {
     //The creation map
     private GoogleMap map;
 
-    //Request Queue for making Games
-    private RequestQueue requestQueue;
-
     //Base URLS for the different WEB functions
     private String webAPIBaseURL = "http://api.myjson.com/bins/q1ey4";
 
     //Hopoefully you can use Firebase
     private DatabaseReference mDatabase;
 
+    //Volley do things
+    private static String webAPIBase = "https://www.boardgameatlas.com/api/search?name=";
+    private RequestQueue requestQueue;
+    public static String gameList;
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creategames);
+
+        //Create what needs to be made to get the user's current/Last known location
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        Log.d("weAreClose", "wereWe?");
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            setUserLocation(location);
+                            centerMap(getMap());
+                            Log.d("weFuckedIt", "onSuccess: " + location.getLatitude() + " " + location.getLongitude());
+                        } else {
+                            setFakeLocation();
+                            centerOnFakeLocation(getMap());
+                            Log.d("weFakedIt", "onSuccess: ");
+                        }
+                    }
+                });
 
         //Setup Firebase
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -92,50 +118,22 @@ public class CreateGamesActivity extends AppCompatActivity {
                 });
             }
         });
-        //Create what needs to be made to get the user's current/Last known location
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        Log.d("weAreClose", "wereWe?");
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            setUserLocation(location);
-                            centerMap(getMap());
-                            Log.d("weFuckedIt", "onSuccess: " + location.getLatitude() + " " + location.getLongitude());
-                        } else {
-                            setFakeLocation();
-                            centerOnFakeLocation(getMap());
-                            Log.d("weFakedIt", "onSuccess: ");
-                        }
-                    }
-                });
 
+        //Creating buttons/ text view for this activity
         Button createGame = findViewById(R.id.createGame);
+        Button search = findViewById(R.id.search);
+        TextView gameName = findViewById(R.id.boardGameName);
+        TextView bio = findViewById(R.id.bio);
 
+        search.setOnClickListener(unused -> {
+            String input = gameName.getText().toString();
+
+            getNames(input);
+        });
         createGame.setOnClickListener(unused -> {
-
-            //If not request Queue exists create one.
-            /*
-            if (requestQueue == null) {
-                createRequestQueue();
-            }
-             */
-
-            //Make the Request.
-            //makeGetRequest();
-
-            /*
-            try {
-                makePutRequest();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-             */
-            writeGames();
-            readGames();
+            //writeGames();
+            Log.d("GameToBeWritten", "One of these days");
         });
     }
 
@@ -189,22 +187,8 @@ public class CreateGamesActivity extends AppCompatActivity {
     private GoogleMap getMap() {
         return map;
     }
-
-    private void createRequestQueue() {
-        // Instantiate the cache
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
-
-        // Set up the network to use HttpURLConnection as the HTTP client.
-        Network network = new BasicNetwork(new HurlStack());
-
-        // Instantiate the RequestQueue with the cache and network.
-        requestQueue = new RequestQueue(cache, network);
-
-        // Start the queue
-        requestQueue.start();
-    }
     private void writeGames() {
-        Game game = new Game("Haha", "Catan 2", "karnappatel.com", 2);
+        Game game = new Game("Haha", "Catan 2", "karnappatel.com", 40.1, 40.1, new String[0]);
         String myKey = mDatabase.child("games").child("games").push().getKey();
         mDatabase.child("games").child("games").child(myKey).setValue(game);
     }
@@ -231,5 +215,52 @@ public class CreateGamesActivity extends AppCompatActivity {
                 // ...
             }
         });
+    }
+
+    public void getNames(String userInput) {
+        if (userInput == null || userInput.equals("Game Name") || userInput.length() < 1) {
+            Log.d("Properly stopped the wrog thing", "Looks good");
+            return;
+        } else {
+
+            if (requestQueue == null) {
+                requestQueue = Volley.newRequestQueue(this);
+                requestQueue.start();
+            }
+
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.GET, webAPIBase + userInput + "&limit=1&fuzzy_match=true&client_id=SB1VGnDv7M", null, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("NoErrorsYet", "Somehow I manage");
+                            try {
+                                Log.d("we got 'em boys ", response.getJSONArray("games").getJSONObject(0).getString("name"));
+                                //Get the JSONArray of the games from the search
+                                String gameNames = response.getJSONArray("games").getJSONObject(0).getString("name");
+                                setGameList(gameNames);
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                setGameList("error");
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO: Handle error
+                            setGameList("error");
+                        }
+                    });
+            requestQueue.add(jsonObjectRequest);
+        }
+    }
+
+    private void setGameList(String inputGame) {
+        TextView gameName = findViewById(R.id.boardGameName);
+        gameName.setText(inputGame);
     }
 }
