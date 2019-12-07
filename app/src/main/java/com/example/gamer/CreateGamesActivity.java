@@ -134,7 +134,7 @@ public class CreateGamesActivity extends AppCompatActivity {
             getNames(input);
         });
         createGame.setOnClickListener(unused -> {
-            //writeGames();
+            writeGames();
             Log.d("GameToBeWritten", "One of these days");
         });
     }
@@ -190,7 +190,7 @@ public class CreateGamesActivity extends AppCompatActivity {
         return map;
     }
     private void writeGames() {
-        Game game = new Game("Haha", "Catan 2", "karnappatel.com", 40.1, 40.1, new ArrayList<Users>());
+        Game game = new Game("Looking for Gold", "John Shuster", "https://image.businessinsider.com/5a917d2eaae60527008b46d7?width=1100&format=jpeg&auto=webp", 40.1, 40.1, new ArrayList<Users>());
         String myKey = mDatabase.child("games").child("games").push().getKey();
         mDatabase.child("games").child("games").child(myKey).setValue(game);
     }

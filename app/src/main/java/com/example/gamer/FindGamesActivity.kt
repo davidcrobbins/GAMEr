@@ -62,7 +62,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
             Log.d("CardStackView", "Left CardWasSwipedPlsHelp: p = $adapter.getSpots()[manager.topPosition].url}")
         } else if (direction == Direction.Right) {
             //Do the other thing
-            Log.d("RightSWIPE", "Right CardWasSwipedPlsHelp: p = ${adapter?.getSpots()!![manager.topPosition].url}")
+            Log.d("RightSWIPE", "Right CardWasSwipedPlsHelp: p = ${adapter!!.getSpots()[manager.topPosition - 1].url}")
         }
     }
 
@@ -310,12 +310,20 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
     }
 
     private fun checkUser(user: String, game: Game): Boolean {
+        if (game.users == null) {
+            return true
+        }
+
         for (i in game.users.indices step 1) {
             if (user == game.users[i].user) {
                 return false
             }
         }
         return true
+    }
+
+    private fun writeUserGame(user: String, game: Game) {
+
     }
 
 }
