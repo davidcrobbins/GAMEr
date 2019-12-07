@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.DiffUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.yuyakaido.android.cardstackview.*
@@ -23,7 +22,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
     private val drawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
     private val cardStackView by lazy { findViewById<CardStackView>(R.id.card_stack_view) }
     private val manager by lazy { CardStackLayoutManager(this, this) }
-    private var adapter: CardStackAdapter = null
+    private var adapter: CardStackAdapter? = null
     private lateinit var mDatabase: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,10 +32,9 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         mDatabase = FirebaseDatabase.getInstance().reference
 
         print("A")
-        getObjects(FirebaseAuth.getInstance().currentUser!!.uid)
+        FirebaseAuth.getInstance().currentUser!!.email?.let { getObjects(it) }
         //setupNavigation()
-        setupCardStackView()
-        setupButton()
+
     }
 
     override fun onBackPressed() {
@@ -53,15 +51,18 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
 
     override fun onCardSwiped(direction: Direction) {
         Log.d("CardStackView", "onCardSwiped: p = ${manager.topPosition}, d = $direction")
+
+        /*
         if (manager.topPosition == adapter.itemCount - 5) {
             paginate()
         }
+         */
 
         if (direction == Direction.Left) {
             Log.d("CardStackView", "Left CardWasSwipedPlsHelp: p = $adapter.getSpots()[manager.topPosition].url}")
         } else if (direction == Direction.Right) {
             //Do the other thing
-            Log.d("CardStackView", "Right CardWasSwipedPlsHelp: p = ${adapter.getSpots()[manager.topPosition].url}")
+            Log.d("RightSWIPE", "Right CardWasSwipedPlsHelp: p = ${adapter?.getSpots()!![manager.topPosition].url}")
         }
     }
 
@@ -84,6 +85,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
     }
 
     private fun setupCardStackView() {
+
         initialize()
     }
 
@@ -142,7 +144,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
             }
         }
     }
-
+    /*
     private fun paginate() {
         val old = adapter.getSpots()
         val new = old.plus(createSpots())
@@ -151,7 +153,8 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         adapter.setSpots(new)
         result.dispatchUpdatesTo(adapter)
     }
-
+     */
+    /*
     private fun reload() {
         val old = adapter.getSpots()
         val new = createSpots()
@@ -160,7 +163,8 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         adapter.setSpots(new)
         result.dispatchUpdatesTo(adapter)
     }
-
+     */
+    /*
     private fun addFirst(size: Int) {
         val old = adapter.getSpots()
         val new = mutableListOf<Spot>().apply {
@@ -174,7 +178,8 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         adapter.setSpots(new)
         result.dispatchUpdatesTo(adapter)
     }
-
+     */
+    /*
     private fun addLast(size: Int) {
         val old = adapter.getSpots()
         val new = mutableListOf<Spot>().apply {
@@ -186,7 +191,8 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         adapter.setSpots(new)
         result.dispatchUpdatesTo(adapter)
     }
-
+     */
+    /*
     private fun removeFirst(size: Int) {
         if (adapter.getSpots().isEmpty()) {
             return
@@ -205,6 +211,8 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         result.dispatchUpdatesTo(adapter)
     }
 
+     */
+    /*
     private fun removeLast(size: Int) {
         if (adapter.getSpots().isEmpty()) {
             return
@@ -223,6 +231,8 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         result.dispatchUpdatesTo(adapter)
     }
 
+     */
+    /*
     private fun replace() {
         val old = adapter.getSpots()
         val new = mutableListOf<Spot>().apply {
@@ -249,6 +259,8 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         result.dispatchUpdatesTo(adapter)
     }
 
+     */
+    /*
     private fun createSpot(): Spot {
         return Spot(
                 name = "Yasaka Shrine",
@@ -257,8 +269,13 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         )
     }
 
+     */
+
     private fun createSpots(spots: List<Spot>) {
         adapter = CardStackAdapter(spots)
+
+        setupCardStackView()
+        setupButton()
     }
 
     private fun getObjects(user: String) {
@@ -266,21 +283,18 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
 
         val spots = ArrayList<Spot>()
 
-        val myMostViewedPostsQuery = mDatabase.child("posts")
-                .orderByChild("metrics/views")
-        myMostViewedPostsQuery.addValueEventListener(object : ValueEventListener {
+        val myMostViewedPostsQuery = mDatabase.child("games").child("games")
+
+        myMostViewedPostsQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                loop@ for (postSnapshot in dataSnapshot.children) {
+                for (postSnapshot in dataSnapshot.children) {
                     // TODO: handle the post
+                    Log.d("LookingForSomething", "WhyIsItNull")
                     val game = postSnapshot.getValue(Game::class.java)
                     if (game != null) {
-                        for (i in 0 until game.users.size step 1) {
-                            if (user == game.users[i].user) {
-                                continue@loop
-                            } else
-                                continue;
+                        if(checkUser(user, game)) {
+                            spots.add(Spot(name = game.name, city = game.bio, id = game.idNumber, latitude = game.userLatitude, longitude = game.userLongitude, url = game.url))
                         }
-
                     }
                 }
                 createSpots(spots)
@@ -293,6 +307,15 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
                 // ...
             }
         })
+    }
+
+    private fun checkUser(user: String, game: Game): Boolean {
+        for (i in game.users.indices step 1) {
+            if (user == game.users[i].user) {
+                return false
+            }
+        }
+        return true
     }
 
 }

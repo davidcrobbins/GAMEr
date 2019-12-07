@@ -1,5 +1,8 @@
 package com.example.gamer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Game {
     public int idNumber;
 
@@ -11,13 +14,13 @@ public class Game {
     public double userLatitude;
     public double userLongitude;
 
-    public Users[] users;
+    public List<Users> users;
 
     public Game() {
 
     }
 
-    public Game(String bio, String game, String url, double userLatitude, double userLongitude, Users[] users) {
+    public Game(String bio, String game, String url, double userLatitude, double userLongitude, ArrayList<Users> users) {
 
         //this.owner = owner;
         this.bio = bio;

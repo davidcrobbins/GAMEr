@@ -35,6 +35,8 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 
 public class CreateGamesActivity extends AppCompatActivity {
 
@@ -188,7 +190,7 @@ public class CreateGamesActivity extends AppCompatActivity {
         return map;
     }
     private void writeGames() {
-        Game game = new Game("Haha", "Catan 2", "karnappatel.com", 40.1, 40.1, new String[0]);
+        Game game = new Game("Haha", "Catan 2", "karnappatel.com", 40.1, 40.1, new ArrayList<Users>());
         String myKey = mDatabase.child("games").child("games").push().getKey();
         mDatabase.child("games").child("games").child(myKey).setValue(game);
     }
