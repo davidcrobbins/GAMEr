@@ -81,23 +81,28 @@ public class YourGamesActivity extends AppCompatActivity {
                 Log.d("Confusing", user + entry.getValue().user);
                 View gameChunk = getLayoutInflater().inflate(R.layout.chunk_yourgames, parentForGames, false);
                 if (entry.getValue().user.equals(user)) {
-                    Log.d("WTH", "WTH");
+                    if (entry.getValue().state == PlayerState.Accepted) {
+                        Log.d("WTH", "WTH");
 
-                    LinearLayout chunkContainer = gameChunk.findViewById(R.id.chunkForGames);
+                        LinearLayout chunkContainer = gameChunk.findViewById(R.id.chunkForGames);
 
-                    TextView owner = gameChunk.findViewById(R.id.owner);
-                    TextView gameName = gameChunk.findViewById(R.id.gameName);
-                    TextView coords = gameChunk.findViewById(R.id.coords);
+                        TextView owner = gameChunk.findViewById(R.id.owner);
+                        TextView gameName = gameChunk.findViewById(R.id.gameName);
+                        TextView coords = gameChunk.findViewById(R.id.coords);
 
-                    owner.setText(String.format("Owner : %s", game.owner));
-                    gameName.setText(game.name);
-                    coords.setText(String.format("%s, %s", game.userLatitude, game.userLongitude));
-                    if (parentForGames.getChildCount() % 2 == 0) {
-                        chunkContainer.setBackgroundColor(Color.rgb(148, 192, 219));
+
+                        owner.setText(String.format("Owner : %s", game.owner));
+                        gameName.setText(game.name);
+                        coords.setText(String.format("%s, %s", game.userLatitude, game.userLongitude));
+                        if (parentForGames.getChildCount() % 2 == 0) {
+                            chunkContainer.setBackgroundColor(Color.rgb(148, 192, 219));
+                        }
+                        //parentForGames.removeAllViews();
+                        parentForGames.addView(gameChunk);
+                        break;
                     }
-                    //parentForGames.removeAllViews();
-                    parentForGames.addView(gameChunk);
-                    break;
+
+
                 }
 
             }

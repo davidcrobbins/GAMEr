@@ -91,7 +91,7 @@ public class ManageGamesActivity extends AppCompatActivity {
             if (game.owner.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
 
 
-                //set up the chunk to be chunkcepted
+                //set up the chunk to be accepted
                 View gameChunk = getLayoutInflater().inflate(R.layout.chunk_managegames, parentForGames, false);
 
                 TextView wantText = gameChunk.findViewById(R.id.wantText);
