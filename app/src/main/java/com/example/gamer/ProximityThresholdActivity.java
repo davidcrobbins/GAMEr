@@ -1,5 +1,6 @@
 package com.example.gamer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +26,9 @@ public class ProximityThresholdActivity extends AppCompatActivity {
                     EditText proximityThresholdText = findViewById(R.id.proximityThreshold);
                     String threshold = proximityThresholdText.getText().toString();
                     proximityThreshold = Integer.parseInt(threshold);
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+
                 });
 
 
