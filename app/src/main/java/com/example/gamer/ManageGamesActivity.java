@@ -73,59 +73,93 @@ public class ManageGamesActivity extends AppCompatActivity {
     }
 
     private void writeGames(List<Game> games) {
+
+        //Get user, set up most outer parent, and remove all views previously there.
         String user = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         LinearLayout parentForGames = findViewById(R.id.parentForManagingGames);
         parentForGames.removeAllViews();
 
+        //Look through all of the games that have been retreived by the app
         for (Game game: games) {
+
+            //make sure android doesn't have a heart attack
             if (game == null) {
                 Log.d("LookingFortheGlitchNull", user);
             }
 
+            //if the owner is the current user, show them things
             if (game.owner.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
 
-                //set up the chunk
+
+                //set up the chunk to be chunkcepted
                 View gameChunk = getLayoutInflater().inflate(R.layout.chunk_managegames, parentForGames, false);
-                //Setting up the sub parents
+
+                TextView wantText = gameChunk.findViewById(R.id.wantText);
+                TextView acceptText = gameChunk.findViewById(R.id.acceptText);
+                //Setting up the sub parents in the chunkception chunck
                 LinearLayout parentForAccepted = gameChunk.findViewById(R.id.parentForAccepted);
                 LinearLayout parentForToBeAccepted = gameChunk.findViewById(R.id.parentForToBeAccepted);
 
 
 
+                if (game.users == null) {
+                    continue;
+                } else {
+                    Log.d("LookingFortheGlitch", user);
+                    for (Map.Entry<String, Users> entry : game.users.entrySet()) {
+                        Log.d("Confusing", user + entry.getValue().user);
 
-                Log.d("LookingFortheGlitch", user);
-                for (Map.Entry<String, Users> entry: game.users.entrySet()) {
-                    Log.d("Confusing", user + entry.getValue().user);
+
+                        if (entry.getValue().state == PlayerState.rightSwipe) {
+
+                            //set up child chunk
+                            View toBeAcceptedChunk = getLayoutInflater().inflate(R.layout.chunk_peopletoaccept, parentForToBeAccepted, false);
+
+                            //set up Views in child chunk
+                            TextView toAccept = toBeAcceptedChunk.findViewById(R.id.toAccept);
+                            Button accept = toBeAcceptedChunk.findViewById(R.id.accept);
+                            Button decline = toBeAcceptedChunk.findViewById(R.id.decline);
+
+                            //change text from database
+                            toAccept.setText(entry.getValue().user);
+
+                            //If owner accepts this person, make the UI change
+                            accept.setOnClickListener(unused -> {
+                                changeDB(user, PlayerState.Accepted, entry.getKey(), game.key);
+                            });
+
+                            //if owner declines this person, make the UI change
+                            decline.setOnClickListener(unused -> {
+                                changeDB(user, PlayerState.notComing, entry.getKey(), game.key);
+                            });
+
+                            //add child chunk to the parent chunk
+                            parentForToBeAccepted.addView(toBeAcceptedChunk);
+                        } else if (entry.getValue().state == PlayerState.Accepted) {
+                            //setting up the other child chunk
+                            View acceptedChunk = getLayoutInflater().inflate(R.layout.chunk_peopleaccepted, parentForAccepted, false);
+
+                            //set up the view in this child chunk
+                            TextView acceptedEmail = acceptedChunk.findViewById(R.id.accepted);
+
+                            //change views and add this child chunk to parent chunck
+                            acceptedEmail.setText(entry.getValue().user);
+                            parentForAccepted.addView(acceptedChunk);
+                        }
 
 
-                    if (entry.getValue().state == PlayerState.rightSwipe) {
-                        View toBeAcceptedChunk = getLayoutInflater().inflate(R.layout.chunk_peopletoaccept, parentForToBeAccepted, false);
-
-                        TextView toAccept = toBeAcceptedChunk.findViewById(R.id.toAccept);
-                        Button accept = toBeAcceptedChunk.findViewById(R.id.accept);
-                        Button decline = toBeAcceptedChunk.findViewById(R.id.decline);
-
-                        toAccept.setText(entry.getValue().user);
-
-                        accept.setOnClickListener(unused -> {
-                            changeDB(user, PlayerState.Accepted, entry.getKey(), game.key);
-                        });
-
-                        decline.setOnClickListener(unused -> {
-                            changeDB(user, PlayerState.notComing, entry.getKey(), game.key);
-                        });
-
-                        parentForToBeAccepted.addView(toBeAcceptedChunk);
-                    } else if (entry.getValue().state == PlayerState.Accepted) {
-                        //setting up the subviews
-                        View acceptedChunk = getLayoutInflater().inflate(R.layout.chunk_peopleaccepted, parentForAccepted, false);
-
-                        TextView acceptedEmail = acceptedChunk.findViewById(R.id.accepted);
-
-                        acceptedEmail.setText(entry.getValue().user);
-                        parentForAccepted.addView(acceptedChunk);
                     }
                 }
+                if (parentForAccepted.getChildCount() < 1) {
+                    acceptText.setVisibility(View.GONE);
+                }
+
+                if (parentForToBeAccepted.getChildCount() < 1) {
+                    wantText.setVisibility(View.GONE);
+                }
+                TextView manageGame = gameChunk.findViewById(R.id.manageGameName);
+                manageGame.setText(game.name);
+                //add everything into the main view
                 parentForGames.addView(gameChunk);
             }
         }

@@ -2,14 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingVertical="@dimen/fui_auth_method_button_margin">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/manageGameName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/acceptText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="people accepted" />
+        android:text="people accepted"
+        android:textStyle="italic" />
 
     <LinearLayout
         android:id="@+id/parentForAccepted"
@@ -20,10 +31,11 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/wantText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="people who want to come" />
+        android:text="people who want to come"
+        android:textStyle="italic" />
 
     <LinearLayout
         android:id="@+id/parentForToBeAccepted"
