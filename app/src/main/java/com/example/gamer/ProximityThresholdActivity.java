@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +20,9 @@ public class ProximityThresholdActivity extends AppCompatActivity {
 
 
         Button accept = findViewById(R.id.accept);
+        TextView text = findViewById(R.id.text);
+        String newText = "Search radius for the events (in m)";
+        text.setText(newText);
 
 
 

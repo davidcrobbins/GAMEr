@@ -322,20 +322,6 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         if (game.users == null) {
             return true
         }
-
-        /*
-        for (key in game.users.keys) {
-
-            if (game.owner == game.users.get(key)) {
-                return false
-            }
-            return false
-        }
-
-
-         */
-
-
         for (keys in game.users) {
             val key = keys.key
             if (user == game.users.get(key)!!.user) {
