@@ -48,11 +48,11 @@ public class LaunchActivity extends AppCompatActivity {
         Button createGame = findViewById(R.id.goLogin);
         createGame.setOnClickListener(unused -> goLoginClicked());
 
-        LatLng firstPoint = new LatLng(40.1119, 88.2282);
         LatLng secondPoint = new LatLng(40.1092, 88.2272);
         //Log.d("distance", "" + DistanceCalculator.distance(firstPoint, secondPoint));
         //System.out.println(DistanceCalculator.threshold(firstPoint));
-        Log.d("threshold", "" + DistanceCalculator.threshold(firstPoint));
+
+
     }
 
     /**
