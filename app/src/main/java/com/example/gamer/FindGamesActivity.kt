@@ -317,8 +317,9 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
             return true
         }
 
-        for (i in game.users.indices step 1) {
-            if (user == game.users[i].user) {
+        for (keys in game.users) {
+            val key = keys.key
+            if (user == game.users.get(key)!!.user) {
                 return false
             }
         }
@@ -354,19 +355,8 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
             thisUser = Users(user, PlayerState.notComing)
         }
 
-
-        if (game.users == null) {
-            val userList = ArrayList<Users>()
-            userList.add(thisUser)
-            game.users = userList
-
-            mDatabase.child("games").child("games").child(game.key).setValue(game)
-        } else {
-            val myKey = mDatabase.child("games").child("games").child(game.key).child("users").push().key
-            mDatabase.child("games").child("games").child(game.key).child("users").child(myKey!!).setValue(thisUser)
-        }
-
-
+        val myKey = mDatabase.child("games").child("games").child(game.key).child("users").push().key
+        mDatabase.child("games").child("games").child(game.key).child("users").child(myKey!!).setValue(thisUser)
     }
 
 }

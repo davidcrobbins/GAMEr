@@ -35,7 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class CreateGamesActivity extends AppCompatActivity {
@@ -205,7 +205,7 @@ public class CreateGamesActivity extends AppCompatActivity {
 
         //finding the URL of the game
         String myKey = mDatabase.child("games").child("games").push().getKey();
-        Game game = new Game(gameBio, gameName, url, 40.1, 40.1, new ArrayList<Users>(), myKey);
+        Game game = new Game(gameBio, gameName, url, 40.1, 40.1, new HashMap<String, Users>(), myKey);
         mDatabase.child("games").child("games").child(myKey).setValue(game);
     }
     private void readGames() {
