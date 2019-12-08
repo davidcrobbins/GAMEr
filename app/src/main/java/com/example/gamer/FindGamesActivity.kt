@@ -34,6 +34,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         FirebaseAuth.getInstance().currentUser!!.email?.let { getObjects(it) }
         //setupNavigation()
 
+
     }
 
     override fun onBackPressed() {
@@ -113,7 +114,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
             manager.setRewindAnimationSetting(setting)
             cardStackView.rewind()
         }
-        
+
          */
 
         val like = findViewById<View>(R.id.like_button)
@@ -298,9 +299,12 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
                     Log.d("LookingForSomething", "WhyIsItNull")
                     val game = postSnapshot.getValue(Game::class.java)
                     if (game != null) {
-                        if(checkUser(user, game)) {
-                            spots.add(Spot(name = game.name, city = game.bio, key = game.key, latitude = game.userLatitude, longitude = game.userLongitude, url = game.url))
-                        }
+                         if (game.owner != user) {
+                            if(checkUser(user, game)) {
+                                spots.add(Spot(name = game.name, city = game.bio, key = game.key, latitude = game.userLatitude, longitude = game.userLongitude, url = game.url))
+                            }
+                         }
+
                     }
                 }
                 createSpots(spots)
@@ -320,9 +324,24 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
             return true
         }
 
+        /*
+        for (key in game.users.keys) {
+
+            if (game.owner == game.users.get(key)) {
+                return false
+            }
+            return false
+        }
+
+
+         */
+
+
         for (keys in game.users) {
             val key = keys.key
             if (user == game.users.get(key)!!.user) {
+                return false
+            } else if (user == game.owner) {
                 return false
             }
         }
