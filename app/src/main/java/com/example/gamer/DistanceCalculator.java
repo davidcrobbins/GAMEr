@@ -3,7 +3,7 @@ package com.example.gamer;
 import com.google.android.gms.maps.model.LatLng;
 
 public class DistanceCalculator {
-    private static int proximityThreshold = 500;
+
 
     private static LatLng userLocation = new LatLng(40.1092, 88.2272);
 
@@ -18,7 +18,8 @@ public class DistanceCalculator {
     }
 
     public static boolean threshold(LatLng coordinate) {
-        if (distance(userLocation, coordinate) < proximityThreshold) {
+        if (distance(userLocation, coordinate) < ProximityThresholdActivity.getProximityThreshold()) {
+
             return true;
         } else {
             return false;

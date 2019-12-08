@@ -8,7 +8,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ProximityThresholdActivity extends AppCompatActivity {
-    private int proximityThreshold;
+    private static int proximityThreshold;
 
     protected void onCreate(final Bundle savedInstanceState) {
 
@@ -33,4 +33,10 @@ public class ProximityThresholdActivity extends AppCompatActivity {
 
 
     }
+
+
+    public static int getProximityThreshold() {
+        return proximityThreshold;
+    }
+
 }
