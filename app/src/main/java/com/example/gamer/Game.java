@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-    public int idNumber;
+    public String key;
 
     //public String owner;
     public String bio;
@@ -20,7 +20,7 @@ public class Game {
 
     }
 
-    public Game(String bio, String game, String url, double userLatitude, double userLongitude, ArrayList<Users> users) {
+    public Game(String bio, String game, String url, double userLatitude, double userLongitude, ArrayList<Users> users, String key) {
 
         //this.owner = owner;
         this.bio = bio;
@@ -30,5 +30,6 @@ public class Game {
         this.userLongitude = userLongitude;
 
         this.users = users;
+        this.key = key;
     }
 }

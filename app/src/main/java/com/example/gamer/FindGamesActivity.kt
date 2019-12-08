@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.yuyakaido.android.cardstackview.*
-import java.util.*
 
 class FindGamesActivity : AppCompatActivity(), CardStackListener {
 
@@ -60,9 +59,11 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
 
         if (direction == Direction.Left) {
             Log.d("CardStackView", "Left CardWasSwipedPlsHelp: p = $adapter.getSpots()[manager.topPosition].url}")
+            getGame(adapter!!.getSpots()[manager.topPosition - 1].key, false)
         } else if (direction == Direction.Right) {
             //Do the other thing
             Log.d("RightSWIPE", "Right CardWasSwipedPlsHelp: p = ${adapter!!.getSpots()[manager.topPosition - 1].url}")
+            getGame(adapter!!.getSpots()[manager.topPosition - 1].key, true)
         }
     }
 
@@ -293,7 +294,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
                     val game = postSnapshot.getValue(Game::class.java)
                     if (game != null) {
                         if(checkUser(user, game)) {
-                            spots.add(Spot(name = game.name, city = game.bio, id = game.idNumber, latitude = game.userLatitude, longitude = game.userLongitude, url = game.url))
+                            spots.add(Spot(name = game.name, city = game.bio, key = game.key, latitude = game.userLatitude, longitude = game.userLongitude, url = game.url))
                         }
                     }
                 }
@@ -322,7 +323,47 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         return true
     }
 
-    private fun writeUserGame(user: String, game: Game) {
+    private fun getGame(key: String, swipe: Boolean) {
+        //var game: Game? = null
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Get Post object and use the values to update the UI
+                val game: Game = dataSnapshot.getValue(Game::class.java)!!
+                // ...
+                writeUserGame(FirebaseAuth.getInstance().currentUser!!.email!!, game, swipe)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("GG", "loadPost:onCancelled", databaseError.toException())
+                // ...
+            }
+        }
+        mDatabase.child("games").child("games").child(key).addListenerForSingleValueEvent(postListener)
+    }
+
+    private fun writeUserGame(user: String, game: Game, swipe: Boolean) {
+        var thisUser: Users? = null
+
+        if (swipe) {
+            thisUser = Users(user, PlayerState.Accepted)
+        } else {
+            thisUser = Users(user, PlayerState.notComing)
+        }
+
+
+        if (game.users == null) {
+            val userList = ArrayList<Users>()
+            userList.add(thisUser)
+            game.users = userList
+
+            mDatabase.child("games").child("games").child(game.key).setValue(game)
+        } else {
+            val myKey = mDatabase.child("games").child("games").child(game.key).child("users").push().key
+            mDatabase.child("games").child("games").child(game.key).child("users").child(myKey!!).setValue(thisUser)
+        }
+
 
     }
 

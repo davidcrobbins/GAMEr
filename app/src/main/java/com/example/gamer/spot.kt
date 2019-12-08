@@ -1,7 +1,7 @@
 package com.example.gamer
 
 data class Spot(
-        val id: Int = counter++.toInt(),
+        val key: String,
         val name: String,
         val city: String,
         val url: String,

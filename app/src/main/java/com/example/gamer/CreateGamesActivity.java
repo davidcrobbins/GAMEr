@@ -189,9 +189,10 @@ public class CreateGamesActivity extends AppCompatActivity {
     private GoogleMap getMap() {
         return map;
     }
+
     private void writeGames() {
-        Game game = new Game("Looking for Gold", "John Shuster", "https://image.businessinsider.com/5a917d2eaae60527008b46d7?width=1100&format=jpeg&auto=webp", 40.1, 40.1, new ArrayList<Users>());
         String myKey = mDatabase.child("games").child("games").push().getKey();
+        Game game = new Game("Looking for Gold", "John Shuster", "https://image.businessinsider.com/5a917d2eaae60527008b46d7?width=1100&format=jpeg&auto=webp", 40.1, 40.1, new ArrayList<Users>(), myKey);
         mDatabase.child("games").child("games").child(myKey).setValue(game);
     }
     private void readGames() {
