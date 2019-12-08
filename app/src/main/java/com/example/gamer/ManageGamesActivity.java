@@ -1,7 +1,6 @@
 package com.example.gamer;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -91,52 +90,43 @@ public class ManageGamesActivity extends AppCompatActivity {
                 LinearLayout parentForAccepted = gameChunk.findViewById(R.id.parentForAccepted);
                 LinearLayout parentForToBeAccepted = gameChunk.findViewById(R.id.parentForToBeAccepted);
 
-                //setting up the subviews
-                View acceptedChunk = getLayoutInflater().inflate(R.layout.chunk_peopleaccepted, parentForAccepted, false);
+
 
 
                 Log.d("LookingFortheGlitch", user);
                 for (Map.Entry<String, Users> entry: game.users.entrySet()) {
                     Log.d("Confusing", user + entry.getValue().user);
 
-                    if (entry.getValue().user.equals(user)) {
-                        Log.d("WTH", "WTH");
-                        if (entry.getValue().state == PlayerState.rightSwipe) {
-                            View toBeAcceptedChunk = getLayoutInflater().inflate(R.layout.chunk_peopletoaccept, parentForToBeAccepted, false);
 
-                            TextView toAccept = findViewById(R.id.toAccept);
-                            Button accept = findViewById(R.id.accept);
-                            Button decline = findViewById(R.id.decline);
+                    if (entry.getValue().state == PlayerState.rightSwipe) {
+                        View toBeAcceptedChunk = getLayoutInflater().inflate(R.layout.chunk_peopletoaccept, parentForToBeAccepted, false);
 
-                            toAccept.setText(entry.getValue().user);
+                        TextView toAccept = toBeAcceptedChunk.findViewById(R.id.toAccept);
+                        Button accept = toBeAcceptedChunk.findViewById(R.id.accept);
+                        Button decline = toBeAcceptedChunk.findViewById(R.id.decline);
 
-                            accept.setOnClickListener(unused -> {
-                                changeDB(user, PlayerState.Accepted, entry.getKey(), game.key);
-                            });
+                        toAccept.setText(entry.getValue().user);
 
-                            decline.setOnClickListener(unused -> {
-                                changeDB(user, PlayerState.notComing, entry.getKey(), game.key);
-                            });
+                        accept.setOnClickListener(unused -> {
+                            changeDB(user, PlayerState.Accepted, entry.getKey(), game.key);
+                        });
 
+                        decline.setOnClickListener(unused -> {
+                            changeDB(user, PlayerState.notComing, entry.getKey(), game.key);
+                        });
 
-                        }
-                        LinearLayout chunkContainer = gameChunk.findViewById(R.id.chunkForGames);
+                        parentForToBeAccepted.addView(toBeAcceptedChunk);
+                    } else if (entry.getValue().state == PlayerState.Accepted) {
+                        //setting up the subviews
+                        View acceptedChunk = getLayoutInflater().inflate(R.layout.chunk_peopleaccepted, parentForAccepted, false);
 
-                        TextView owner = gameChunk.findViewById(R.id.owner);
-                        TextView gameName = gameChunk.findViewById(R.id.gameName);
-                        TextView coords = gameChunk.findViewById(R.id.coords);
+                        TextView acceptedEmail = acceptedChunk.findViewById(R.id.accepted);
 
-                        owner.setText(String.format("Owner : %s", game.owner));
-                        gameName.setText(game.name);
-                        coords.setText(String.format("%s, %s", game.userLatitude, game.userLongitude));
-                        if (parentForGames.getChildCount() % 2 == 0) {
-                            chunkContainer.setBackgroundColor(Color.rgb(148, 192, 219));
-                        }
-                        //parentForGames.removeAllViews();
-                        parentForGames.addView(gameChunk);
-                        break;
+                        acceptedEmail.setText(entry.getValue().user);
+                        parentForAccepted.addView(acceptedChunk);
                     }
                 }
+                parentForGames.addView(gameChunk);
             }
         }
     }

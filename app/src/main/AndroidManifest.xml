@@ -24,6 +24,7 @@
         <activity android:name=".CreateGamesActivity"/>
         <activity android:name=".ProximityThresholdActivity"/>
         <activity android:name=".YourGamesActivity"/>
+        <activity android:name=".ManageGamesActivity"/>
 
         <meta-data
             android:name="com.google.android.gms.version"

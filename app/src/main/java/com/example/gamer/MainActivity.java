@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Launch the ManageGames Activity
         manageGames.setOnClickListener(unused -> {
-            Intent intent = new Intent(this, FindGamesActivity.class);
+            Intent intent = new Intent(this, ManageGamesActivity.class);
 
             //Send User Email to find Games
             //intent.putExtra("userEmail", FirebaseAuth.getInstance().getCurrentUser().getEmail());

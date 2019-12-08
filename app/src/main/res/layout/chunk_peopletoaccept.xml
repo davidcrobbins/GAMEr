@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/fui_auth_method_button_margin"
     android:paddingVertical="@dimen/fui_button_inset_bottom"
-    android:paddingTop="0">
+    android:paddingTop="1dp">
 
     <TextView
         android:id="@+id/toAccept"
