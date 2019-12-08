@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -203,9 +204,12 @@ public class CreateGamesActivity extends AppCompatActivity {
         String gameBio = bio.getText().toString();
         String gameName = name.getText().toString();
 
+        //get the email of the person making the game
+        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
         //finding the URL of the game
         String myKey = mDatabase.child("games").child("games").push().getKey();
-        Game game = new Game(gameBio, gameName, url, 40.1, 40.1, new HashMap<String, Users>(), myKey);
+        Game game = new Game(gameBio, gameName, url, 40.1, 40.1, new HashMap<String, Users>(), myKey, email);
         mDatabase.child("games").child("games").child(myKey).setValue(game);
     }
     private void readGames() {
