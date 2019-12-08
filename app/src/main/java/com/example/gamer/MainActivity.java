@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         Button manageGames = findViewById(R.id.manageGames);
         Button yourGames = findViewById(R.id.yourGames);
         Button createGames = findViewById(R.id.createGames);
+        Button settings = findViewById(R.id.settings);
 
         //Launch Find GameActivity when button pressed
         findGames.setOnClickListener(unused -> {
@@ -58,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
             //Send User Email to find Games
             //intent.putExtra("userEmail", FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
+            startActivity(intent);
+        });
+
+        //Launch ProximityThreshold Activity
+        settings.setOnClickListener(unused -> {
+            Intent intent = new Intent(this, ProximityThresholdActivity.class);
             startActivity(intent);
         });
     }

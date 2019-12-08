@@ -3,7 +3,7 @@ package com.example.gamer;
 import com.google.android.gms.maps.model.LatLng;
 
 public class DistanceCalculator {
-    private static double proximityThreshold = 500;
+    private static int proximityThreshold = 500;
 
     private static LatLng userLocation = new LatLng(40.1092, 88.2272);
 
