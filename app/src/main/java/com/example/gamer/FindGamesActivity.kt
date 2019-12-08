@@ -4,7 +4,6 @@ package com.example.gamer
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.View.VISIBLE
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
@@ -146,7 +145,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
             }
         }
         val textView: TextView = findViewById(R.id.textView3)
-        textView.visibility = VISIBLE
+        textView.visibility = View.VISIBLE
     }
     /*
     private fun paginate() {

@@ -52,7 +52,7 @@ public class CreateGamesActivity extends AppCompatActivity {
     private GoogleMap map;
 
     //Base URLS for the different WEB functions
-    private String webAPIBaseURL = "http://api.myjson.com/bins/q1ey4";
+    //private String webAPIBaseURL = "http://api.myjson.com/bins/q1ey4";
 
     //Hopoefully you can use Firebase
     private DatabaseReference mDatabase;
@@ -134,8 +134,12 @@ public class CreateGamesActivity extends AppCompatActivity {
             getNames(input);
         });
         createGame.setOnClickListener(unused -> {
-            writeGames();
-            Log.d("GameToBeWritten", "One of these days");
+            if (gameName.getText().toString().length() > 0 && !(gameName.getText().toString().equals("Game Name"))) {
+                makeGames(gameName.getText().toString());
+                Log.d("GameToBeWritten", "One of these days");
+            }
+
+            Log.d("NothingHappeningHere", "User input did not meet the criteria");
         });
     }
 
@@ -190,9 +194,18 @@ public class CreateGamesActivity extends AppCompatActivity {
         return map;
     }
 
-    private void writeGames() {
+    private void writeGames(String url) {
+        //Setting up the text views to take the game names from
+        TextView bio = findViewById(R.id.bio);
+        TextView name = findViewById(R.id.boardGameName);
+
+        //getting the game information
+        String gameBio = bio.getText().toString();
+        String gameName = name.getText().toString();
+
+        //finding the URL of the game
         String myKey = mDatabase.child("games").child("games").push().getKey();
-        Game game = new Game("Looking for Gold", "John Shuster", "https://image.businessinsider.com/5a917d2eaae60527008b46d7?width=1100&format=jpeg&auto=webp", 40.1, 40.1, new ArrayList<Users>(), myKey);
+        Game game = new Game(gameBio, gameName, url, 40.1, 40.1, new ArrayList<Users>(), myKey);
         mDatabase.child("games").child("games").child(myKey).setValue(game);
     }
     private void readGames() {
@@ -265,5 +278,48 @@ public class CreateGamesActivity extends AppCompatActivity {
     private void setGameList(String inputGame) {
         TextView gameName = findViewById(R.id.boardGameName);
         gameName.setText(inputGame);
+    }
+
+    private void makeGames(String userInput) {
+
+        if (userInput == null || userInput.equals("Game Name") || userInput.length() < 1) {
+            Log.d("Properly stopped the wrog thing", "Looks good");
+            return;
+        } else {
+
+            if (requestQueue == null) {
+                requestQueue = Volley.newRequestQueue(this);
+                requestQueue.start();
+            }
+
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.GET, webAPIBase + userInput + "&limit=1&fuzzy_match=true&client_id=SB1VGnDv7M", null, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("NoErrorsYet", "Somehow I manage");
+                            try {
+                                Log.d("we got 'em boys ", response.getJSONArray("games").getJSONObject(0).getString("name"));
+                                //Get the JSONArray of the games from the search
+                                String url = response.getJSONArray("games").getJSONObject(0).getJSONObject("images").getString("large");
+                                writeGames(url);
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                setGameList("error");
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO: Handle error
+                            setGameList("error");
+                        }
+                    });
+            requestQueue.add(jsonObjectRequest);
+        }
     }
 }
