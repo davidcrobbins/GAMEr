@@ -1,11 +1,14 @@
 package com.example.gamer;
 
+import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -24,6 +27,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -81,13 +85,27 @@ public class CreateGamesActivity extends AppCompatActivity {
                             setUserLocation(location);
                             centerMap(getMap());
                             Log.d("weFuckedIt", "onSuccess: " + location.getLatitude() + " " + location.getLongitude());
-                        } else {
-                            setFakeLocation();
-                            centerOnFakeLocation(getMap());
-                            Log.d("weFakedIt", "onSuccess: ");
                         }
                     }
-                });
+                }).addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("weFakedIt", "gg sir");
+                        setFakeLocation();
+                        centerOnFakeLocation(getMap());
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(CreateGamesActivity.this).create();
+                        alertDialog.setTitle("Current Location could not be found.");
+                        alertDialog.setMessage("Your current location could not be found, please hold down on the location of the game on the map.");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+            }
+        });
 
         //Setup Firebase
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -151,7 +169,7 @@ public class CreateGamesActivity extends AppCompatActivity {
 
     public void setFakeLocation() {
         userLatitude = 37.7601;
-        userLongitude = 89.0773;
+        userLongitude = -89.0773;
     }
 
     //sets a default location for map, in situations where the user's GPS isn't receiving location data.
@@ -209,7 +227,7 @@ public class CreateGamesActivity extends AppCompatActivity {
 
         //finding the URL of the game
         String myKey = mDatabase.child("games").child("games").push().getKey();
-        Game game = new Game(gameBio, gameName, url, 40.1, 40.1, new HashMap<String, Users>(), myKey, email);
+        Game game = new Game(gameBio, gameName, url, userLatitude, userLongitude, new HashMap<String, Users>(), myKey, email);
         mDatabase.child("games").child("games").child(myKey).setValue(game);
     }
     private void readGames() {

@@ -8,8 +8,6 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class ProximityThresholdActivity extends AppCompatActivity {
     private static int proximityThreshold;
 
@@ -30,7 +28,7 @@ public class ProximityThresholdActivity extends AppCompatActivity {
                     String threshold = proximityThresholdText.getText().toString();
                     proximityThreshold = Integer.parseInt(threshold);
                     Log.d("proximity", "" + ProximityThresholdActivity.getProximityThreshold());
-                    Log.d("threshold", "" + DistanceCalculator.threshold(new LatLng(40.1119, 88.2282)=));
+                    //Log.d("threshold", "" + DistanceCalculator.threshold(new LatLng(40.1119, 88.2282)=));
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
 
