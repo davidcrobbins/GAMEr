@@ -43,43 +43,44 @@
                 android:layout_alignParentBottom="true"
                 android:clipChildren="false">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/skip_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/rewind_button"
-                    android:layout_toStartOf="@+id/rewind_button"
-                    android:src="@drawable/skip_red_24dp"
-                    app:backgroundTint="@android:color/white"
-                    app:fabSize="auto"
-                    app:rippleColor="#22ED7563"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/rewind_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/rewind_blue_24dp"
-                    app:backgroundTint="@android:color/white"
-                    app:fabSize="mini"
-                    app:rippleColor="#225BC9FA"/>
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/skip_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="164dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="105dp"
+                        android:layout_marginBottom="12dp"
+                        android:src="@drawable/skip_red_24dp"
+                        app:backgroundTint="@android:color/white"
+                        app:fabSize="auto"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/like_button"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:rippleColor="#22ED7563" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/like_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/rewind_button"
-                    android:layout_toEndOf="@+id/rewind_button"
-                    android:src="@drawable/like_green_24dp"
-                    app:backgroundTint="@android:color/white"
-                    app:fabSize="auto"
-                    app:rippleColor="#226FE2B3"/>
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/like_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="105dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="164dp"
+                        android:layout_marginBottom="12dp"
+                        android:src="@drawable/like_green_24dp"
+                        app:backgroundTint="@android:color/white"
+                        app:fabSize="auto"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/skip_button"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:rippleColor="#226FE2B3" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </RelativeLayout>
 

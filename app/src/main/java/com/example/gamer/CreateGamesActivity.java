@@ -1,6 +1,7 @@
 package com.example.gamer;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -157,8 +158,19 @@ public class CreateGamesActivity extends AppCompatActivity {
                 makeGames(gameName.getText().toString());
                 Log.d("GameToBeWritten", "One of these days");
             }
-
+            Intent intent = new Intent(this, MainActivity.class);
             Log.d("NothingHappeningHere", "User input did not meet the criteria");
+            AlertDialog alertDialog = new AlertDialog.Builder(CreateGamesActivity.this).create();
+            alertDialog.setTitle("YAY!");
+            alertDialog.setMessage("Your game has been created! Please go back to the main menu.");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Main Menu",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            startActivity(intent);
+                        }
+                    });
+            alertDialog.show();
         });
     }
 

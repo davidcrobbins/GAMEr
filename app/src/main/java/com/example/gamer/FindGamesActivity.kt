@@ -101,6 +101,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
             manager.setSwipeAnimationSetting(setting)
             cardStackView.swipe()
         }
+        /*
 
         val rewind = findViewById<View>(R.id.rewind_button)
         rewind.setOnClickListener {
@@ -112,6 +113,8 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
             manager.setRewindAnimationSetting(setting)
             cardStackView.rewind()
         }
+        
+         */
 
         val like = findViewById<View>(R.id.like_button)
         like.setOnClickListener {
