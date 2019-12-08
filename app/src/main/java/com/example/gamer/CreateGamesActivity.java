@@ -170,7 +170,7 @@ public class CreateGamesActivity extends AppCompatActivity {
 
     //center the Creattion map on the User's last known location.
     private void centerMap(final GoogleMap map) {
-        //boundns of users last known location.
+        //bounds of users last known location.
 
         //lat and lon of the user set for posting the JSON later.
         userLatitude = userLocation.getLatitude();

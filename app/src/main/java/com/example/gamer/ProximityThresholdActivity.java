@@ -18,11 +18,15 @@ public class ProximityThresholdActivity extends AppCompatActivity {
 
         Button accept = findViewById(R.id.accept);
 
-        EditText proximityThresholdText = findViewById(R.id.proximityThreshold);
-        String threshold = proximityThresholdText.getText().toString();
-        int result = Integer.parseInt(threshold);
 
-        proximityThreshold = result;
+
+        accept.setOnClickListener(unused -> {
+
+                    EditText proximityThresholdText = findViewById(R.id.proximityThreshold);
+                    String threshold = proximityThresholdText.getText().toString();
+                    proximityThreshold = Integer.parseInt(threshold);
+                });
+
 
     }
 }
