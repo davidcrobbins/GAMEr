@@ -1,12 +1,11 @@
 package com.example.gamer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class Game {
     public String key;
 
-    //public String owner;
+    public String owner;
     public String bio;
     public String name;
     public String url;
@@ -14,13 +13,13 @@ public class Game {
     public double userLatitude;
     public double userLongitude;
 
-    public List<Users> users;
+    public Map<String, Users> users;
 
     public Game() {
 
     }
 
-    public Game(String bio, String game, String url, double userLatitude, double userLongitude, ArrayList<Users> users, String key) {
+    public Game(String bio, String game, String url, double userLatitude, double userLongitude, Map<String, Users> users, String key, String owner) {
 
         //this.owner = owner;
         this.bio = bio;
@@ -29,6 +28,7 @@ public class Game {
         this.userLatitude = userLatitude;
         this.userLongitude = userLongitude;
 
+        this.owner = owner;
         this.users = users;
         this.key = key;
     }
