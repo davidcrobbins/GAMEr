@@ -5,18 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="166dp"
-        android:layout_height="74dp"
-        android:text="GAMEr"
-        android:textColor="#E91E63"
-        android:textSize="40sp"
-        android:textStyle="bold"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="350dp"
+        android:layout_height="499dp"
         app:layout_constraintBottom_toTopOf="@+id/goLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/appimage" />
 
     <Button
         android:id="@+id/goLogin"

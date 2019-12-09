@@ -1,16 +1,21 @@
 package com.example.gamer
 
 //import com.google.android.material.navigation.NavigationView
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.yuyakaido.android.cardstackview.*
@@ -21,13 +26,39 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
     private val cardStackView by lazy { findViewById<CardStackView>(R.id.card_stack_view) }
     private val manager by lazy { CardStackLayoutManager(this, this) }
     private var adapter: CardStackAdapter? = null
+    private var userLatitude: Double = 37.7601
+    private var userLongitude: Double = -89.1
     private lateinit var mDatabase: DatabaseReference
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_findgames)
-        // ...
+
+        //set up the basic references
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mDatabase = FirebaseDatabase.getInstance().reference
+
+        fusedLocationClient.lastLocation
+                .addOnSuccessListener { location : Location? ->
+                    if (location != null) {
+                        setLocation(location)
+                    } else {
+                        setCoordinates()
+                    }
+
+                }.addOnFailureListener {
+                    Log.d("PleaseDoSomething", "WhyAreYoutNotWorking:")
+
+                    setCoordinates()
+
+                    val alertDialog = AlertDialog.Builder(this@FindGamesActivity).create()
+                    alertDialog.setTitle("Current Location could not be found.")
+                    alertDialog.setMessage("Your current location could not be found, we will be displaying all games, no matter its location.")
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK"
+                    ) { dialog, which -> dialog.dismiss() }
+                    alertDialog.show()
+                }
 
         print("A")
         FirebaseAuth.getInstance().currentUser!!.email?.let { getObjects(it) }
@@ -299,7 +330,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
                     val game = postSnapshot.getValue(Game::class.java)
                     if (game != null) {
                          if (game.owner != user) {
-                            if(checkUser(user, game)) {
+                            if(checkUser(user, game) && DistanceCalculator.threshold(LatLng(game.userLatitude, game.userLongitude), LatLng(userLatitude, userLongitude))) {
                                 spots.add(Spot(name = game.name, city = game.bio, key = game.key, latitude = game.userLatitude, longitude = game.userLongitude, url = game.url))
                             }
                          }
@@ -364,6 +395,18 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
 
         val myKey = mDatabase.child("games").child("games").child(game.key).child("users").push().key
         mDatabase.child("games").child("games").child(game.key).child("users").child(myKey!!).setValue(thisUser)
+    }
+
+    private fun setLocation(location: Location) {
+        userLatitude = location.latitude
+        userLongitude = location.longitude
+    }
+
+    private fun setCoordinates() {
+        userLatitude = 0.0
+        userLongitude = 0.0
+
+        ProximityThresholdActivity.setProximityThreshold(40075000)
     }
 
 }

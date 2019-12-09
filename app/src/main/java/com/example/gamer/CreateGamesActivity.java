@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +39,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,15 +70,17 @@ public class CreateGamesActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     public static String gameList;
 
+    private LocationCallback locationCallback;
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creategames);
 
-        //Create what needs to be made to get the user's current/Last known location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        //mLocationSettingsRequest = builder.build();
         Log.d("weAreClose", "wereWe?");
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -86,6 +90,21 @@ public class CreateGamesActivity extends AppCompatActivity {
                             setUserLocation(location);
                             centerMap(getMap());
                             Log.d("weFuckedIt", "onSuccess: " + location.getLatitude() + " " + location.getLongitude());
+                        } else {
+                            setFakeLocation();
+                            centerOnFakeLocation(getMap());
+
+                            AlertDialog alertDialog = new AlertDialog.Builder(CreateGamesActivity.this).create();
+                            alertDialog.setTitle("Current Location could not be found.");
+                            alertDialog.setMessage("Your current location could not be found, please hold down on the location of the game on the map.");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                            Log.d("FGFGFG", "FGFGFG");
                         }
                     }
                 }).addOnFailureListener(this, new OnFailureListener() {
@@ -105,6 +124,7 @@ public class CreateGamesActivity extends AppCompatActivity {
                                     }
                                 });
                         alertDialog.show();
+                        e.printStackTrace();
             }
         });
 
@@ -158,19 +178,7 @@ public class CreateGamesActivity extends AppCompatActivity {
                 makeGames(gameName.getText().toString());
                 Log.d("GameToBeWritten", "One of these days");
             }
-            Intent intent = new Intent(this, MainActivity.class);
-            Log.d("NothingHappeningHere", "User input did not meet the criteria");
-            AlertDialog alertDialog = new AlertDialog.Builder(CreateGamesActivity.this).create();
-            alertDialog.setTitle("YAY!");
-            alertDialog.setMessage("Your game has been created! Please go back to the main menu.");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Main Menu",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            startActivity(intent);
-                        }
-                    });
-            alertDialog.show();
+
         });
     }
 
@@ -241,25 +249,37 @@ public class CreateGamesActivity extends AppCompatActivity {
         String myKey = mDatabase.child("games").child("games").push().getKey();
         Game game = new Game(gameBio, gameName, url, userLatitude, userLongitude, new HashMap<String, Users>(), myKey, email);
         mDatabase.child("games").child("games").child(myKey).setValue(game);
+
+        //The Game has been posted, so go ahead and make it okay to go back to the main menu.
+        Intent intent = new Intent(this, MainActivity.class);
+        Log.d("NothingHappeningHere", "User input did not meet the criteria");
+        AlertDialog alertDialog = new AlertDialog.Builder(CreateGamesActivity.this).create();
+        alertDialog.setTitle("YAY!");
+        alertDialog.setMessage("Your game has been created! Please go back to the main menu.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Main Menu",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        startActivity(intent);
+                    }
+                });
+        alertDialog.show();
     }
     private void readGames() {
         // My top posts by number of stars
-        Query myTopPostsQuery = mDatabase.child("games").child("games");
-            // TODO: implement the ChildEventListener methods as documented above
-            // ...
-            // My top posts by number of stars
-        myTopPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query gamesQuery = mDatabase.child("games").child("games");
+
+        gamesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    // TODO: handle the post
                     Game game = postSnapshot.getValue(Game.class);
                     Log.d("bioIsHere", game.bio);
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NotNull DatabaseError databaseError) {
                 // Getting Post failed, log a message
                 Log.w("F", "loadPost:onCancelled", databaseError.toException());
                 // ...
@@ -294,15 +314,35 @@ public class CreateGamesActivity extends AppCompatActivity {
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                setGameList("error");
+                                //setGameList("error");
+
+                                AlertDialog alertDialog = new AlertDialog.Builder(CreateGamesActivity.this).create();
+                                alertDialog.setTitle("Whoopsies :(");
+                                alertDialog.setMessage("We weren't able to find you game online");
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "okay",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog.show();
                             }
                         }
                     }, new Response.ErrorListener() {
 
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            // TODO: Handle error
-                            setGameList("error");
+                            //setGameList("error");
+                            AlertDialog alertDialog = new AlertDialog.Builder(CreateGamesActivity.this).create();
+                            alertDialog.setTitle("Whoopsies :(");
+                            alertDialog.setMessage("We weren't able to find you game online");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "okay",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
                         }
                     });
             requestQueue.add(jsonObjectRequest);
@@ -342,7 +382,27 @@ public class CreateGamesActivity extends AppCompatActivity {
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                setGameList("error");
+                                //setGameList("error");
+
+
+                                AlertDialog alertDialog = new AlertDialog.Builder(CreateGamesActivity.this).create();
+                                alertDialog.setTitle("Whoopsies :(");
+                                alertDialog.setMessage("We weren't able to find you game online, do you want to proceed and use a basic image or change your game?");
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "I have the right game",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                writeGames("https://media.wired.com/photos/5a0201b14834c514857a7ed7/master/w_2560%2Cc_limit/1217-WI-APHIST-01.jpg");
+                                            }
+                                        });
+                                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "cancel post",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+
+                                            }
+                                        });
+                                alertDialog.show();
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -356,4 +416,5 @@ public class CreateGamesActivity extends AppCompatActivity {
             requestQueue.add(jsonObjectRequest);
         }
     }
+
 }

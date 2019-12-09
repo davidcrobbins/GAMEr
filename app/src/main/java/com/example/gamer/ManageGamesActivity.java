@@ -1,6 +1,7 @@
 package com.example.gamer;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -93,6 +94,7 @@ public class ManageGamesActivity extends AppCompatActivity {
 
                 //set up the chunk to be accepted
                 View gameChunk = getLayoutInflater().inflate(R.layout.chunk_managegames, parentForGames, false);
+                LinearLayout chunkContainer = gameChunk.findViewById(R.id.manageChunkContainer);
 
                 TextView wantText = gameChunk.findViewById(R.id.wantText);
                 TextView acceptText = gameChunk.findViewById(R.id.acceptText);
@@ -160,6 +162,9 @@ public class ManageGamesActivity extends AppCompatActivity {
                 TextView manageGame = gameChunk.findViewById(R.id.manageGameName);
                 manageGame.setText(game.name);
                 //add everything into the main view
+                if (parentForGames.getChildCount() % 2 == 0) {
+                    chunkContainer.setBackgroundColor(Color.rgb(148, 192, 219));
+                }
                 parentForGames.addView(gameChunk);
             }
         }

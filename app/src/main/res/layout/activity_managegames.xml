@@ -20,8 +20,7 @@
             android:id="@+id/parentForManagingGames"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="@dimen/fui_auth_method_button_margin"></LinearLayout>
+            android:orientation="vertical"></LinearLayout>
     </ScrollView>
 
 </LinearLayout>

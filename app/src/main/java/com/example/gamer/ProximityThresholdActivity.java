@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ProximityThresholdActivity extends AppCompatActivity {
-    private static int proximityThreshold;
+    private static int proximityThreshold = 8050;
 
     protected void onCreate(final Bundle savedInstanceState) {
 
@@ -30,14 +30,13 @@ public class ProximityThresholdActivity extends AppCompatActivity {
 
                     EditText proximityThresholdText = findViewById(R.id.proximityThreshold);
                     String threshold = proximityThresholdText.getText().toString();
-                    proximityThreshold = Integer.parseInt(threshold);
-                    Log.d("proximity", "" + ProximityThresholdActivity.getProximityThreshold());
-                    //Log.d("threshold", "" + DistanceCalculator.threshold(new LatLng(40.1119, 88.2282)=));
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-
-
-
+                    if (Integer.parseInt(threshold) > 0) {
+                        proximityThreshold = Integer.parseInt(threshold);
+                        Log.d("proximity", "" + ProximityThresholdActivity.getProximityThreshold());
+                        //Log.d("threshold", "" + DistanceCalculator.threshold(new LatLng(40.1119, 88.2282)=));
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                    }
                 });
 
     }
@@ -45,6 +44,10 @@ public class ProximityThresholdActivity extends AppCompatActivity {
 
     public static int getProximityThreshold() {
         return proximityThreshold;
+    }
+
+    public static void setProximityThreshold(int value) {
+        proximityThreshold = value;
     }
 
 }

@@ -2,7 +2,6 @@ package com.example.gamer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,39 +13,26 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * hahahahahaha.
- */
+
 public class LaunchActivity extends AppCompatActivity {
-    /**
-     * I do not enjoy this.
-     * @param savedInstanceState gg.
-     */
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
         Intent intent = new Intent(this, MainActivity.class);
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) { // see below discussion
-            startActivity(intent);
-            finish();
 
-        } else {
-            // Choose authentication providers
-            List<AuthUI.IdpConfig> providers = Arrays.asList(
-                    new AuthUI.IdpConfig.EmailBuilder().build());
-
-// Create and launch sign-in intent
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(providers)
-                            .build(),
-                    1);
-        }
 
         Button createGame = findViewById(R.id.goLogin);
-        createGame.setOnClickListener(unused -> goLoginClicked());
+        createGame.setOnClickListener(unused -> {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) { // see below discussion
+                startActivity(intent);
+                finish();
+
+            } else {
+                goLoginClicked();
+            }
+        });
 
         LatLng secondPoint = new LatLng(40.1092, 88.2272);
         //Log.d("distance", "" + DistanceCalculator.distance(firstPoint, secondPoint));

@@ -77,6 +77,9 @@ public class YourGamesActivity extends AppCompatActivity {
             }
 
             Log.d("LookingFortheGlitch", user);
+            if (game.users == null) {
+                continue;
+            }
             for (Map.Entry<String, Users> entry: game.users.entrySet()) {
                 Log.d("Confusing", user + entry.getValue().user);
                 View gameChunk = getLayoutInflater().inflate(R.layout.chunk_yourgames, parentForGames, false);
@@ -93,7 +96,7 @@ public class YourGamesActivity extends AppCompatActivity {
 
                         owner.setText(String.format("Owner : %s", game.owner));
                         gameName.setText(game.name);
-                        coords.setText(String.format("%s, %s", game.userLatitude, game.userLongitude));
+                        coords.setText(String.format("Locations: %s, %s", game.userLatitude, game.userLongitude));
                         if (parentForGames.getChildCount() % 2 == 0) {
                             chunkContainer.setBackgroundColor(Color.rgb(148, 192, 219));
                         }

@@ -17,8 +17,8 @@ public class DistanceCalculator {
         return Math.sqrt(latDistance * latDistance + lngDistance * lngDistance);
     }
 
-    public static boolean threshold(LatLng coordinate) {
-        if (distance(userLocation, coordinate) < ProximityThresholdActivity.getProximityThreshold()) {
+    public static boolean threshold(LatLng coordinate, LatLng otherCoordinates) {
+        if (distance(otherCoordinates, coordinate) < ProximityThresholdActivity.getProximityThreshold()) {
 
             return true;
         } else {

@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/manageChunkContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingHorizontal="@dimen/fui_auth_method_button_margin"
     android:paddingVertical="@dimen/fui_auth_method_button_margin">
 
     <TextView
@@ -12,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:textSize="16sp"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <TextView
@@ -20,6 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="people accepted"
+        android:textSize="18sp"
         android:textStyle="italic" />
 
     <LinearLayout
@@ -35,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="people who want to come"
+        android:textSize="18sp"
         android:textStyle="italic" />
 
     <LinearLayout
