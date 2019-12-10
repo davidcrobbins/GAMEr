@@ -73,6 +73,7 @@ class FindGamesActivity : AppCompatActivity(), CardStackListener {
         } else {
             super.onBackPressed()
         }
+        finish()
     }
 
     override fun onCardDragging(direction: Direction, ratio: Float) {

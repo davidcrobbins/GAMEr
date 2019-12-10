@@ -1,14 +1,15 @@
 package com.example.gamer;
 
-;
-
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +23,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+;
 
 
 public class YourGamesActivity extends AppCompatActivity {
@@ -89,6 +92,7 @@ public class YourGamesActivity extends AppCompatActivity {
 
                         LinearLayout chunkContainer = gameChunk.findViewById(R.id.chunkForGames);
 
+                        Button leave = gameChunk.findViewById(R.id.leave);
                         TextView owner = gameChunk.findViewById(R.id.owner);
                         TextView gameName = gameChunk.findViewById(R.id.gameName);
                         TextView coords = gameChunk.findViewById(R.id.coords);
@@ -100,6 +104,28 @@ public class YourGamesActivity extends AppCompatActivity {
                         if (parentForGames.getChildCount() % 2 == 0) {
                             chunkContainer.setBackgroundColor(Color.rgb(148, 192, 219));
                         }
+
+                        leave.setOnClickListener(unused -> {
+
+                            AlertDialog alertDialog = new AlertDialog.Builder(YourGamesActivity.this).create();
+                            alertDialog.setTitle("Are you sure?");
+                            alertDialog.setMessage("Are you positive you want to leave this game, this action cannot be reversed...");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Please Let me Stay",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Leave Game",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            leaveGame(game.key, entry.getKey());
+                                            dialog.dismiss();
+
+                                        }
+                                    });
+                            alertDialog.show();
+                        });
                         //parentForGames.removeAllViews();
                         parentForGames.addView(gameChunk);
                         break;
@@ -111,6 +137,18 @@ public class YourGamesActivity extends AppCompatActivity {
             }
 
         }
+
+
+        if (parentForGames.getChildCount() == 0) {
+            TextView fillerText = findViewById(R.id.fillerText);
+            fillerText.setVisibility(View.VISIBLE);
+        }
         Log.d("FFFFFF", "" + parentForGames.getChildCount());
+    }
+
+    private void leaveGame(String gameKey, String userKey) {
+        mDatabase.child("games").child("games").child(gameKey).child("users").child(userKey).child("state").setValue(PlayerState.notComing);
+
+        getGames(FirebaseAuth.getInstance().getCurrentUser().getEmail());
     }
 }

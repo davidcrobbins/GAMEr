@@ -89,7 +89,7 @@ public class CreateGamesActivity extends AppCompatActivity {
                         if (location != null) {
                             setUserLocation(location);
                             centerMap(getMap());
-                            Log.d("weFuckedIt", "onSuccess: " + location.getLatitude() + " " + location.getLongitude());
+                            Log.d("weIt", "onSuccess: " + location.getLatitude() + " " + location.getLongitude());
                         } else {
                             setFakeLocation();
                             centerOnFakeLocation(getMap());
